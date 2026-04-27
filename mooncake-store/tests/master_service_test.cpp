@@ -2168,9 +2168,7 @@ TEST_F(MasterServiceTest, BatchExistKeyTest) {
 
     // Tets batch
     test_keys.push_back("non_existent_key");
-    std::vector<std::string_view> test_key_views(test_keys.begin(),
-                                                 test_keys.end());
-    auto exist_resp = service_->BatchExistKey(test_key_views);
+    auto exist_resp = service_->BatchExistKey(test_keys);
     for (int i = 0; i < test_object_num; ++i) {
         ASSERT_TRUE(exist_resp[i].value());
     }

@@ -11,7 +11,6 @@
 #include "rpc_types.h"
 #include "replica.h"
 #include "master_config.h"
-#include "utils.h"
 
 namespace mooncake {
 class ClientManager;
@@ -84,10 +83,10 @@ class MasterService {
      * @brief Check if an object exists
      * @return ErrorCode::OK if exists, otherwise return other ErrorCode
      */
-    auto ExistKey(std::string_view key) -> tl::expected<bool, ErrorCode>;
+    auto ExistKey(const std::string& key) -> tl::expected<bool, ErrorCode>;
 
     std::vector<tl::expected<bool, ErrorCode>> BatchExistKey(
-        const std::vector<std::string_view>& keys);
+        const std::vector<std::string>& keys);
 
     /**
      * @brief Fetch all keys
@@ -161,7 +160,7 @@ class MasterService {
      * @return An expected object containing the replica list on success, or an
      * ErrorCode on failure.
      */
-    virtual auto GetReplicaList(std::string_view key,
+    virtual auto GetReplicaList(const std::string& key,
                                 const GetReplicaListRequestConfig& config =
                                     GetReplicaListRequestConfig())
         -> tl::expected<GetReplicaListResponse, ErrorCode>;
@@ -171,7 +170,7 @@ class MasterService {
      * @return ErrorCode::OK on success, ErrorCode::OBJECT_NOT_FOUND if not
      * found
      */
-    auto Remove(std::string_view key) -> tl::expected<void, ErrorCode>;
+    auto Remove(const std::string& key) -> tl::expected<void, ErrorCode>;
 
     /**
      * @brief Removes objects from the master whose keys match a regex pattern.
@@ -179,7 +178,7 @@ class MasterService {
      * @return An expected object containing the number of removed objects on
      * success, or an ErrorCode on failure.
      */
-    auto RemoveByRegex(std::string_view str) -> tl::expected<long, ErrorCode>;
+    auto RemoveByRegex(const std::string& str) -> tl::expected<long, ErrorCode>;
 
     /**
      * @brief Remove all objects and their replicas
@@ -272,8 +271,7 @@ class MasterService {
     //    first remove the corresponding key from `segment_key_index`.
     struct MetadataShard {
         mutable Mutex mutex;
-        std::unordered_map<std::string, std::unique_ptr<ObjectMetadata>,
-                           StringHash, std::equal_to<>>
+        std::unordered_map<std::string, std::unique_ptr<ObjectMetadata>>
             metadata GUARDED_BY(mutex);
 
         // segment_id -> { key -> replica_reference_count }.
@@ -284,7 +282,7 @@ class MasterService {
     // Virtual function to access shards
     virtual MetadataShard& GetShard(size_t idx) = 0;
     virtual const MetadataShard& GetShard(size_t idx) const = 0;
-    virtual size_t GetShardIndex(std::string_view key) const = 0;
+    virtual size_t GetShardIndex(const std::string& key) const = 0;
     virtual size_t GetShardCount() const = 0;
 
     // Helpers for maintaining per-shard segment_key_index.
@@ -305,8 +303,9 @@ class MasterService {
     // Helper class for accessing metadata with automatic locking
     class MetadataAccessor {
        public:
-        MetadataAccessor(MasterService* service, std::string_view key)
+        MetadataAccessor(MasterService* service, const std::string& key)
             : service_(service),
+              key_(key),
               shard_idx_(service_->GetShardIndex(key)),
               shard_(service_->GetShard(shard_idx_)),
               lock_(&shard_.mutex),
@@ -342,17 +341,16 @@ class MasterService {
 
        protected:
         MasterService* service_;
+        std::string key_;
         size_t shard_idx_;
         MetadataShard& shard_;
         MutexLocker lock_;
-        using MetadataMap =
-            std::unordered_map<std::string, std::unique_ptr<ObjectMetadata>,
-                               StringHash, std::equal_to<>>;
-        MetadataMap::iterator it_;
+        std::unordered_map<std::string,
+                           std::unique_ptr<ObjectMetadata>>::iterator it_;
     };
 
     virtual std::unique_ptr<MetadataAccessor> GetMetadataAccessor(
-        std::string_view key) {
+        const std::string& key) {
         return std::make_unique<MetadataAccessor>(this, key);
     }
 

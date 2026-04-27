@@ -193,7 +193,7 @@ auto MasterService::QueryClientStatus(const QueryClientStatusRequest& req)
     return GetClientManager().QueryClientStatus(req);
 }
 
-auto MasterService::ExistKey(std::string_view key)
+auto MasterService::ExistKey(const std::string& key)
     -> tl::expected<bool, ErrorCode> {
     auto accessor = GetMetadataAccessor(key);
     if (!accessor->Exists()) {
@@ -211,7 +211,7 @@ auto MasterService::ExistKey(std::string_view key)
 }
 
 std::vector<tl::expected<bool, ErrorCode>> MasterService::BatchExistKey(
-    const std::vector<std::string_view>& keys) {
+    const std::vector<std::string>& keys) {
     std::vector<tl::expected<bool, ErrorCode>> results;
     results.reserve(keys.size());
     for (const auto& key : keys) {
@@ -338,10 +338,10 @@ auto MasterService::GetReplicaListByRegex(const std::string& regex_pattern)
     return results;
 }
 
-auto MasterService::GetReplicaList(std::string_view key,
+auto MasterService::GetReplicaList(const std::string& key,
                                    const GetReplicaListRequestConfig& config)
     -> tl::expected<GetReplicaListResponse, ErrorCode> {
-    auto accessor = GetMetadataAccessor(key);
+    auto accessor = GetMetadataAccessor(std::string(key));
 
     MasterMetricManager::instance().inc_total_get_nums();
 
@@ -373,7 +373,7 @@ auto MasterService::GetReplicaList(std::string_view key,
     return resp;
 }
 
-auto MasterService::Remove(std::string_view key)
+auto MasterService::Remove(const std::string& key)
     -> tl::expected<void, ErrorCode> {
     auto accessor = GetMetadataAccessor(key);
     if (!accessor->Exists()) {
@@ -394,15 +394,13 @@ auto MasterService::Remove(std::string_view key)
     return {};
 }
 
-auto MasterService::RemoveByRegex(std::string_view regex_pattern)
+auto MasterService::RemoveByRegex(const std::string& regex_pattern)
     -> tl::expected<long, ErrorCode> {
     long removed_count = 0;
     std::regex pattern;
 
     try {
-        pattern = std::regex(regex_pattern.data(),
-                             regex_pattern.data() + regex_pattern.size(),
-                             std::regex::ECMAScript);
+        pattern = std::regex(regex_pattern, std::regex::ECMAScript);
     } catch (const std::regex_error& e) {
         LOG(ERROR) << "Invalid regex pattern: " << regex_pattern
                    << ", error: " << e.what();

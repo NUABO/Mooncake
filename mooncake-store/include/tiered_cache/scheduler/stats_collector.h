@@ -9,14 +9,12 @@
 #include <mutex>
 #include <set>
 #include <string>
-#include <string_view>
 #include <thread>
 #include <unordered_map>
 #include <utility>
 #include <vector>
 
 #include "tiered_cache/scheduler/scheduler_policy.h"
-#include "utils.h"
 
 namespace mooncake {
 
@@ -81,13 +79,13 @@ class StatsCollector {
     virtual ~StatsCollector() = default;
 
     // Record an access event for a key
-    virtual void RecordAccess(std::string_view key) = 0;
+    virtual void RecordAccess(const std::string& key) = 0;
 
     // Get a snapshot of current stats for policy decision
     virtual AccessStats GetSnapshot() = 0;
 
     // Remove a key from tracking (called when key is deleted)
-    virtual void RemoveKey(std::string_view key) = 0;
+    virtual void RemoveKey(const std::string& key) = 0;
 };
 
 /**
@@ -117,15 +115,10 @@ class SimpleStatsCollector : public StatsCollector {
         last_aggregate_update_time_ = now_fn_();
     }
 
-    void RecordAccess(std::string_view key) override {
+    void RecordAccess(const std::string& key) override {
         auto& shard = GetShard(key);
         std::lock_guard<std::mutex> lock(shard.mutex);
-        auto it = shard.pending_counts.find(key);
-        if (it != shard.pending_counts.end()) {
-            ++it->second;
-        } else {
-            shard.pending_counts.emplace(std::string(key), 1);
-        }
+        shard.pending_counts[key]++;
     }
 
     AccessStats GetSnapshot() override {
@@ -139,14 +132,11 @@ class SimpleStatsCollector : public StatsCollector {
         return stats;
     }
 
-    void RemoveKey(std::string_view key) override {
+    void RemoveKey(const std::string& key) override {
         auto& shard = GetShard(key);
         std::lock_guard<std::mutex> lock(shard.mutex);
-        auto it = shard.pending_counts.find(key);
-        if (it != shard.pending_counts.end()) {
-            shard.pending_counts.erase(it);
-        }
-        shard.pending_deletes.emplace_back(key);
+        shard.pending_counts.erase(key);
+        shard.pending_deletes.push_back(key);
     }
 
    private:
@@ -166,21 +156,18 @@ class SimpleStatsCollector : public StatsCollector {
 
     struct alignas(64) Shard {
         std::mutex mutex;
-        std::unordered_map<std::string, uint64_t, StringHash, std::equal_to<>>
-            pending_counts;
+        std::unordered_map<std::string, uint64_t> pending_counts;
         std::vector<std::string> pending_deletes;
     };
 
-    Shard& GetShard(std::string_view key) {
-        const auto shard_index = std::hash<std::string_view>{}(key)&shard_mask_;
+    Shard& GetShard(const std::string& key) {
+        const auto shard_index = std::hash<std::string>{}(key)&shard_mask_;
         return shards_[shard_index];
     }
 
     void ApplyPendingChanges() {
         for (auto& shard : shards_) {
-            std::unordered_map<std::string, uint64_t, StringHash,
-                               std::equal_to<>>
-                pending_counts;
+            std::unordered_map<std::string, uint64_t> pending_counts;
             std::vector<std::string> pending_deletes;
 
             {

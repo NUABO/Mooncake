@@ -333,7 +333,6 @@ TEST_F(MasterMetricsTest, BatchRequestTest) {
     UUID client_id = generate_uuid();
 
     std::vector<std::string> keys = {"test_key1", "test_key2", "test_key3"};
-    std::vector<std::string_view> key_views(keys.begin(), keys.end());
     std::vector<uint64_t> value_lengths = {1024, 2048, 512};
     ReplicateConfig config;
     config.replica_num = 1;
@@ -349,7 +348,7 @@ TEST_F(MasterMetricsTest, BatchRequestTest) {
     ASSERT_TRUE(mount_result.has_value());
 
     // Test BatchExistKey request (should all return false initially)
-    auto batch_exist_result = service_.BatchExistKey(key_views);
+    auto batch_exist_result = service_.BatchExistKey(keys);
     ASSERT_EQ(batch_exist_result.size(), 3);
     ASSERT_EQ(metrics.get_batch_exist_key_requests(), 1);
     ASSERT_EQ(metrics.get_batch_exist_key_partial_successes(), 0);
@@ -368,7 +367,7 @@ TEST_F(MasterMetricsTest, BatchRequestTest) {
     ASSERT_EQ(metrics.get_batch_put_start_failed_items(), 0);
 
     // Test BatchGetReplicaList request (should all fail)
-    auto batch_get_replica_result = service_.BatchGetReplicaList(key_views);
+    auto batch_get_replica_result = service_.BatchGetReplicaList(keys);
     ASSERT_EQ(batch_get_replica_result.size(), 3);
     ASSERT_EQ(metrics.get_batch_get_replica_list_requests(), 1);
     ASSERT_EQ(metrics.get_batch_get_replica_list_partial_successes(), 0);
@@ -386,7 +385,7 @@ TEST_F(MasterMetricsTest, BatchRequestTest) {
     ASSERT_EQ(metrics.get_batch_put_end_failed_items(), 0);
 
     // Test BatchExistKey again (should all return true now)
-    auto batch_exist_result2 = service_.BatchExistKey(key_views);
+    auto batch_exist_result2 = service_.BatchExistKey(keys);
     ASSERT_EQ(batch_exist_result2.size(), 3);
     ASSERT_EQ(metrics.get_batch_exist_key_requests(), 2);
     ASSERT_EQ(metrics.get_batch_exist_key_partial_successes(), 0);
@@ -395,7 +394,7 @@ TEST_F(MasterMetricsTest, BatchRequestTest) {
     ASSERT_EQ(metrics.get_batch_exist_key_failed_items(), 0);
 
     // Test BatchGetReplicaList again (should all succeed now)
-    auto batch_get_replica_result2 = service_.BatchGetReplicaList(key_views);
+    auto batch_get_replica_result2 = service_.BatchGetReplicaList(keys);
     ASSERT_EQ(batch_get_replica_result2.size(), 3);
     ASSERT_EQ(metrics.get_batch_get_replica_list_requests(), 2);
     ASSERT_EQ(metrics.get_batch_get_replica_list_partial_successes(), 0);
@@ -414,9 +413,8 @@ TEST_F(MasterMetricsTest, BatchRequestTest) {
 
     // Test partial success
     keys.push_back("test_key4");
-    key_views = std::vector<std::string_view>(keys.begin(), keys.end());
     value_lengths.push_back(512);
-    auto batch_get_replica_result3 = service_.BatchGetReplicaList(key_views);
+    auto batch_get_replica_result3 = service_.BatchGetReplicaList(keys);
     ASSERT_EQ(batch_get_replica_result3.size(), 4);
     ASSERT_EQ(metrics.get_batch_get_replica_list_requests(), 3);
     ASSERT_EQ(metrics.get_batch_get_replica_list_partial_successes(), 1);

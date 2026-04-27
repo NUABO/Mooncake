@@ -2,7 +2,6 @@
 
 #include <coroutine>
 #include <string>
-#include <string_view>
 #include <vector>
 #include <ylt/coro_rpc/impl/coro_rpc_client.hpp>
 #include <ylt/util/tl/expected.hpp>
@@ -138,7 +137,7 @@ ErrorCode MasterClient::Connect(const std::string& master_addr) {
 }
 
 tl::expected<bool, ErrorCode> MasterClient::ExistKey(
-    std::string_view object_key) {
+    const std::string& object_key) {
     ScopedVLogTimer timer(1, "MasterClient::ExistKey");
     timer.LogRequest("object_key=", object_key);
 
@@ -148,7 +147,7 @@ tl::expected<bool, ErrorCode> MasterClient::ExistKey(
 }
 
 std::vector<tl::expected<bool, ErrorCode>> MasterClient::BatchExistKey(
-    const std::vector<std::string_view>& object_keys) {
+    const std::vector<std::string>& object_keys) {
     ScopedVLogTimer timer(1, "MasterClient::BatchExistKey");
     timer.LogRequest("keys_count=", object_keys.size());
 
@@ -159,7 +158,7 @@ std::vector<tl::expected<bool, ErrorCode>> MasterClient::BatchExistKey(
 }
 
 tl::expected<GetReplicaListResponse, ErrorCode> MasterClient::GetReplicaList(
-    std::string_view key, const GetReplicaListRequestConfig& config) {
+    const std::string& key, const GetReplicaListRequestConfig& config) {
     ScopedVLogTimer timer(1, "MasterClient::GetReplicaList");
     timer.LogRequest("object_key=", key);
 
@@ -170,7 +169,7 @@ tl::expected<GetReplicaListResponse, ErrorCode> MasterClient::GetReplicaList(
 }
 
 async_simple::coro::Lazy<tl::expected<GetReplicaListResponse, ErrorCode>>
-MasterClient::AsyncGetReplicaList(std::string_view key,
+MasterClient::AsyncGetReplicaList(const std::string& key,
                                   const GetReplicaListRequestConfig& config) {
     auto result =
         co_await invoke_rpc_async<&WrappedMasterService::GetReplicaList,
@@ -179,7 +178,7 @@ MasterClient::AsyncGetReplicaList(std::string_view key,
 }
 
 std::vector<tl::expected<GetReplicaListResponse, ErrorCode>>
-MasterClient::BatchGetReplicaList(const std::vector<std::string_view>& keys,
+MasterClient::BatchGetReplicaList(const std::vector<std::string>& keys,
                                   const GetReplicaListRequestConfig& config) {
     ScopedVLogTimer timer(1, "MasterClient::BatchGetReplicaList");
     timer.LogRequest("requests_count=", keys.size());
@@ -234,7 +233,7 @@ MasterClient::GetReplicaListByRegex(const std::string& str) {
     return result;
 }
 
-tl::expected<void, ErrorCode> MasterClient::Remove(std::string_view key) {
+tl::expected<void, ErrorCode> MasterClient::Remove(const std::string& key) {
     ScopedVLogTimer timer(1, "MasterClient::Remove");
     timer.LogRequest("key=", key);
 
@@ -244,7 +243,7 @@ tl::expected<void, ErrorCode> MasterClient::Remove(std::string_view key) {
 }
 
 tl::expected<long, ErrorCode> MasterClient::RemoveByRegex(
-    std::string_view str) {
+    const std::string& str) {
     ScopedVLogTimer timer(1, "MasterClient::RemoveByRegex");
     timer.LogRequest("key=", str);
 

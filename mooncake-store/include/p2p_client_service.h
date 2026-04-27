@@ -207,14 +207,14 @@ class P2PClientService final : public ClientService {
     /**
      * @brief handle COMMIT type callback: notify master to add new replica
      */
-    tl::expected<void, ErrorCode> SyncAddReplica(std::string_view key,
+    tl::expected<void, ErrorCode> SyncAddReplica(const std::string& key,
                                                  const UUID& tier_id,
                                                  size_t size);
 
     /**
      * @brief handle DELETE type callback: notify master to remove replica
      */
-    tl::expected<void, ErrorCode> SyncRemoveReplica(std::string_view key,
+    tl::expected<void, ErrorCode> SyncRemoveReplica(const std::string& key,
                                                     const UUID& tier_id);
 
     /**
@@ -225,7 +225,7 @@ class P2PClientService final : public ClientService {
      * @return Vector of ErrorCode results for each segment
      */
     std::vector<tl::expected<void, ErrorCode>> SyncBatchRemoveReplica(
-        std::string_view key, std::vector<UUID> segment_ids);
+        const std::string& key, std::vector<UUID> segment_ids);
 
     /**
      * @brief Collect tier info from DataManager and build P2P Segments.
@@ -263,7 +263,8 @@ class P2PClientService final : public ClientService {
                               BatchGetWriteRouteResponse& batch_resp);
 
     tl::expected<std::unique_ptr<TaskHandle<void>>, ErrorCode>
-    CreatePutHandleFromLocal(std::string_view key, std::vector<Slice>& slices);
+    CreatePutHandleFromLocal(const std::string& key,
+                             std::vector<Slice>& slices);
 
     std::vector<tl::expected<void, ErrorCode>> CollectResults(
         std::vector<tl::expected<std::unique_ptr<TaskHandle<void>>, ErrorCode>>&
@@ -284,11 +285,11 @@ class P2PClientService final : public ClientService {
 
     struct LocalWriteOp : WriteOp {
         DataManager* data_manager;
-        std::string_view key;
+        std::string key;
         std::vector<Slice>* slices;
 
-        LocalWriteOp(DataManager* dm, std::string_view k, std::vector<Slice>* s)
-            : data_manager(dm), key(k), slices(s) {}
+        LocalWriteOp(DataManager* dm, std::string k, std::vector<Slice>* s)
+            : data_manager(dm), key(std::move(k)), slices(s) {}
 
         std::string_view route() const override { return "local"; }
         std::unique_ptr<TaskHandle<void>> Dispatch() override;
@@ -314,7 +315,7 @@ class P2PClientService final : public ClientService {
     };
 
     tl::expected<std::vector<std::unique_ptr<WriteOp>>, ErrorCode>
-    BuildWriteOps(std::string_view key, std::vector<Slice>& slices,
+    BuildWriteOps(const std::string& key, std::vector<Slice>& slices,
                   const WriteRouteRequestConfig& config,
                   std::vector<WriteCandidate> candidates);
 
@@ -323,8 +324,7 @@ class P2PClientService final : public ClientService {
             promise,
         std::unique_ptr<TaskHandle<void>> current_task,
         std::string current_route,
-        std::vector<std::unique_ptr<WriteOp>> retry_op_list,
-        std::string_view key);
+        std::vector<std::unique_ptr<WriteOp>> retry_op_list, std::string key);
 
    private:
     struct ResolvedRoute {
@@ -341,7 +341,7 @@ class P2PClientService final : public ClientService {
         using MasterFetch = std::function<
             async_simple::coro::Lazy<std::vector<ResolvedRoute>>()>;
 
-        RouteIterator(std::string_view key, std::vector<ResolvedRoute> initial,
+        RouteIterator(std::string key, std::vector<ResolvedRoute> initial,
                       uint64_t object_size, RouteCache* route_cache,
                       MasterFetch master_fetch);
 
@@ -370,10 +370,10 @@ class P2PClientService final : public ClientService {
         const std::vector<Replica::Descriptor>& replicas);
 
     tl::expected<RouteIterator, ErrorCode> BuildRouteIter(
-        std::string_view key, const ReadRouteConfig& config);
+        const std::string& key, const ReadRouteConfig& config);
 
     tl::expected<RouteIterator, ErrorCode> BuildRouteIter(
-        std::string_view key, const ReadRouteConfig& config,
+        const std::string& key, const ReadRouteConfig& config,
         std::vector<ResolvedRoute> pre_fetched);
 
    private:
@@ -403,11 +403,12 @@ class P2PClientService final : public ClientService {
                          const ReadRouteConfig& config);
 
     tl::expected<ReadTaskHandle, ErrorCode> CreateRemoteGetHandle(
-        std::string_view key, std::shared_ptr<ClientBufferAllocator> allocator,
+        const std::string& key,
+        std::shared_ptr<ClientBufferAllocator> allocator,
         const ReadRouteConfig& config, std::vector<ResolvedRoute> pre_fetched);
 
     tl::expected<ReadTaskHandle, ErrorCode> CreateRemoteGetHandle(
-        std::string_view key, std::vector<Slice>& slices,
+        const std::string& key, std::vector<Slice>& slices,
         const ReadRouteConfig& config, std::vector<ResolvedRoute> pre_fetched);
 
     /**
@@ -417,7 +418,7 @@ class P2PClientService final : public ClientService {
      * and chains subsequent candidates on failure (no stack recursion).
      */
     tl::expected<ReadTaskHandle, ErrorCode> InnerGetViaRoute(
-        std::string_view key, std::vector<Slice>& slices, RouteIterator iter);
+        const std::string& key, std::vector<Slice>& slices, RouteIterator iter);
 
     async_simple::coro::Lazy<void> RunReadWithRetry(
         RouteIterator iter, std::shared_ptr<RemoteReadRequest> req,
@@ -425,7 +426,7 @@ class P2PClientService final : public ClientService {
             promise);
 
     async_simple::coro::Lazy<std::vector<ResolvedRoute>>
-    AsyncResolveRoutesFromMaster(std::string_view key,
+    AsyncResolveRoutesFromMaster(const std::string& key,
                                  const ReadRouteConfig& config);
 
     /**

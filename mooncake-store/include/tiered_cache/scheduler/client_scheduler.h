@@ -11,12 +11,10 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <string_view>
-#include <boost/functional/hash.hpp>
 #include "mutex.h"
 #include "tiered_cache/scheduler/scheduler_policy.h"
 #include "tiered_cache/scheduler/stats_collector.h"
 #include "types.h"
-#include "utils.h"
 
 #include <json/value.h>
 
@@ -43,7 +41,7 @@ class ClientScheduler {
     void RegisterTier(CacheTier* tier);
 
     // Incoming event hook (thread-safe)
-    void OnAccess(std::string_view key);
+    void OnAccess(const std::string& key);
 
     /**
      * @brief Get current hot key statistics for HA recovery prioritization.
@@ -51,10 +49,10 @@ class ClientScheduler {
     AccessStats GetHotKeyStats() const;
 
     // Called when a replica is committed or updated
-    void OnCommit(std::string_view key, UUID tier_id, size_t size_bytes);
+    void OnCommit(const std::string& key, UUID tier_id, size_t size_bytes);
 
     // Called when a key or a replica is deleted
-    void OnDelete(std::string_view key,
+    void OnDelete(const std::string& key,
                   std::optional<UUID> tier_id = std::nullopt);
 
     // Called when allocation fails due to insufficient space
@@ -109,12 +107,9 @@ class ClientScheduler {
 
     struct KeyCacheShard {
         mutable Mutex mutex;
-        std::unordered_map<std::string, CachedKeyState, StringHash,
-                           std::equal_to<>>
-            key_cache GUARDED_BY(mutex);
-        std::unordered_map<
-            UUID, std::unordered_set<std::string, StringHash, std::equal_to<>>,
-            boost::hash<UUID>>
+        std::unordered_map<std::string, CachedKeyState> key_cache
+            GUARDED_BY(mutex);
+        std::unordered_map<UUID, std::unordered_set<std::string>>
             tier_resident_keys GUARDED_BY(mutex);
     };
 
@@ -138,10 +133,10 @@ class ClientScheduler {
         const AccessStatEntry* stat_entry = nullptr) const;
     size_t GetCachedKeySize(const std::string& key) const;
 
-    void TrackReplicaLocked(KeyCacheShard& shard, std::string_view key,
+    void TrackReplicaLocked(KeyCacheShard& shard, const std::string& key,
                             UUID tier_id, size_t size_bytes)
         REQUIRES(shard.mutex);
-    bool RemoveReplicaLocked(KeyCacheShard& shard, std::string_view key,
+    bool RemoveReplicaLocked(KeyCacheShard& shard, const std::string& key,
                              std::optional<UUID> tier_id) REQUIRES(shard.mutex);
 
    private:
