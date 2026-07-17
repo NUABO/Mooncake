@@ -1,0 +1,87 @@
+mooncake-store/src/real_client.cpp
+  s_32da23d7d45352::t_d1093b6979e379 595,890-891,923-940,969,974,1127,1137-1141,5597-5698,5794-5807
+mooncake-store/include/segment.h
+  s_32da23d7d45352::t_825895b2859d41 94,136-137
+mooncake-store/include/transfer_task.h
+  s_32da23d7d45352::t_973ec3d7bb62f6 4,8,127-162
+mooncake-store/src/master_service.cpp
+  s_32da23d7d45352::t_b76af8bcc8f5d5 123-136,1155-1156,1828-1834,2891-2892,3004-3068,3070-3075,3081,3094-3096,3160-3161,3166-3169,3350-3351,3363-3387,3414-3420,3422-3445,3544-3553,3564-3566,3640-3641,3851-3858,5039-5040,5049-5050,5052-5053
+docs/source/deployment/ssd-offload.md
+  s_32da23d7d45352::t_caedd1d272e961 91-214
+mooncake-integration/store/store_py.cpp
+  s_32da23d7d45352::t_07f4ee370a2acf 1845,2123-2124,2137,2146-2147,2177-2178
+mooncake-store/src/store_c.cpp
+  s_32da23d7d45352::t_cf38b9a8d664bd 49-50
+mooncake-store/include/master_service.h
+  s_32da23d7d45352::t_781c63f4524c58 634-635,637-638,1051-1052
+mooncake-store/src/segment.cpp
+  s_32da23d7d45352::t_45bf320d0ad12b 222-224,231-232,235-238,681-684,691,703-707,1105-1123
+mooncake-store/src/file_storage.cpp
+  s_32da23d7d45352::t_5de4d8638eb14b 261,664-665,1061-1097
+mooncake-store/tests/file_storage_test.cpp
+  s_32da23d7d45352::t_c601d50986b91f 61-65,172-243
+mooncake-store/include/storage_backend.h
+  s_32da23d7d45352::t_42781e24c06340 280-289,644-648,724-728,731,1041-1045,1048
+mooncake-store/include/real_client.h
+  s_32da23d7d45352::t_a6ccb698f09677 94-95,519-520,701-708
+mooncake-store/include/client_service.h
+  s_32da23d7d45352::t_822194b6b487f8 34,415-416,576-579,658-677,791-803,870-874
+mooncake-store/src/client_service.cpp
+  s_32da23d7d45352::t_55bbb408d21c03 6,11,134,137,140,148-149,158-159,168-169,175-189,194-207,244-245,247-248,267-268,276-308,1608,1658-1663,1679-1688,1696-1697,1699,1737,1777-1791,1795-1845,1855-1858,1881,1946,1999,2006,2148-2150,2196-2198,2202-2205,2251-2422,2448-2449,2451-2453,2466,2470,2506-2511,2608,2612,2675-2677,2683-2701,2780-2792,2950,2956-2964,3406-3408
+mooncake-store/tests/ha/snapshot/master_service_test_for_snapshot_base.h
+  s_32da23d7d45352::t_607f88f22f9414 77,298,407-409
+mooncake-store/include/master_client.h
+  s_32da23d7d45352::t_541005d6b4a2c5 423-424
+mooncake-store/src/storage/distributed/distributed_storage_backend.cpp
+  s_32da23d7d45352::t_21b8f10ec543f8 190-223
+mooncake-store/tests/direct_ssd_test.cpp
+  s_32da23d7d45352::t_5dfc710f672f86 1-268
+mooncake-store/src/storage_backend.cpp
+  s_32da23d7d45352::t_b3ddfa6a1adbc7 1091-1125,1354-1366,1391-1396,1404-1405,1407-1408,1418-1452,1735-1750,2382-2385,2391,2394-2398,3111-3144
+mooncake-store/include/rpc_service.h
+  s_32da23d7d45352::t_94513e992030be 210-212
+mooncake-store/go/mooncakestore/config.go
+  s_32da23d7d45352::t_e9af5e173f1f23 22,32
+mooncake-store/go/mooncakestore/store.go
+  s_32da23d7d45352::t_96ddfe2f2c6f5d 132,147-155
+mooncake-store/include/storage/distributed/distributed_storage_backend.h
+  s_32da23d7d45352::t_145ce704286788 43-47
+mooncake-store/src/master_client.cpp
+  s_32da23d7d45352::t_bc3f1068199728 929-930,933-934,938
+mooncake-store/src/rpc_service.cpp
+  s_32da23d7d45352::t_6f82b7907cdd0c 1152-1153,1157-1160
+docs/source/design/ssd-offload.md
+  s_32da23d7d45352::t_91fb0c1df78ca8 94-170
+mooncake-store/include/pyclient.h
+  s_32da23d7d45352::t_bd16759cbcf0bd 166-169,234-235
+mooncake-store/include/dummy_client.h
+  s_32da23d7d45352::t_1d2da64363d374 35-36
+mooncake-store/include/store_c.h
+  s_32da23d7d45352::t_d4dc7454111d33 31
+mooncake-store/tests/CMakeLists.txt
+  s_32da23d7d45352::t_1c388cff52f840 70
+mooncake-store/include/file_storage.h
+  s_32da23d7d45352::t_e0de14fc701bcc 52-74
+mooncake-store/rust/src/store.rs
+  s_32da23d7d45352::t_28229303cf03ac 47-48,81-85,625,633,646,654,672,694
+mooncake-store/tests/storage_backend_test.cpp
+  s_32da23d7d45352::t_af399d9ea49b97 1752,1755,1777-1779,1791,1793,1798,1800,1805-1806,1812,1835,1845-1847,1859-1861,1863,1870-1892,1897,1919-1920,1939,1941,1944,1946-1947,1949,1954-2010
+mooncake-store/include/replica.h
+  s_32da23d7d45352::t_25c6fb128cc640 95-98,141-144,690-694
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "740211ea22e5f263fd8d7d65e1b3c005e4f4bd02",
+  "prompts": {},
+  "sessions": {
+    "s_32da23d7d45352": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cadc8f48-b0fa-434d-95f1-2e705cbb9700",
+        "model": "unknown"
+      },
+      "human_author": "tan changzhi <544463199@qq.com>"
+    }
+  }
+}
