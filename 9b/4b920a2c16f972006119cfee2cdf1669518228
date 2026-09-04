@@ -1,0 +1,19 @@
+mooncake-transfer-engine/src/transport/rdma_transport/rdma_transport.cpp
+  s_3c878c513cd54b::t_ef7069efc2fe68 619-628,658,667,672
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "9b4b920a2c16f972006119cfee2cdf1669518228",
+  "prompts": {},
+  "sessions": {
+    "s_3c878c513cd54b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a631ecb9-c94f-4219-99b2-1ce5ed9432e6",
+        "model": "deepseek-v4-flash"
+      },
+      "human_author": "tan changzhi <544463199@qq.com>"
+    }
+  }
+}
