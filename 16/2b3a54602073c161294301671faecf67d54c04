@@ -1,0 +1,32 @@
+mooncake-store/src/shm_helper.cpp
+  s_3c878c513cd54b::t_b28fef38466dd8 283,290-298
+  s_3c878c513cd54b::t_3d925c4cdef6fb 124-134
+mooncake-store/src/real_client.cpp
+  s_3c878c513cd54b::t_4337d7080dcfe4 2577-2580,2587-2590,2594-2600,2609-2611,2613
+  s_3c878c513cd54b::t_d4999523e185bf 1454-1480
+  s_3c878c513cd54b::t_08670a1b024b6c 1416-1419,1423-1429,1446-1450
+  s_3c878c513cd54b::t_3b6c77749d96c8 2831-2834,2840,2871-2874,2878-2885,2900-2902
+  s_3c878c513cd54b::t_e10ca452196868 2933-2936
+  s_3c878c513cd54b::t_5ba063c5ee7ead 2970-3005,3008,3020-3021,3023
+mooncake-store/include/real_client.h
+  s_3c878c513cd54b::t_86fe9e95873ddd 1083-1092
+mooncake-store/src/dummy_client.cpp
+  s_3c878c513cd54b::t_f69db6cdb28cdb 788-795
+  s_3c878c513cd54b::t_125122554aeb1b 660-664
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "162b3a54602073c161294301671faecf67d54c04",
+  "prompts": {},
+  "sessions": {
+    "s_3c878c513cd54b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a631ecb9-c94f-4219-99b2-1ce5ed9432e6",
+        "model": "deepseek-v4-flash"
+      },
+      "human_author": "tan changzhi <544463199@qq.com>"
+    }
+  }
+}
