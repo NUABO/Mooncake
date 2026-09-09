@@ -1,0 +1,29 @@
+mooncake-store/src/spdk/spdk_wrapper.cpp
+  s_673f909c63a730::t_65e8ae17141973 1-2,11-12,127-129,138-142,144,150-151,153-159,161
+  s_6671f76f5ad91e::t_6ba51d40a18440 10,13
+  s_6671f76f5ad91e::t_77c614082444f6 130-137,143,152,160
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "65138c5be4e675996340ed4f1c3e4e6d4984ee5b",
+  "prompts": {},
+  "sessions": {
+    "s_6671f76f5ad91e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "698ee9e1-d9d3-4e15-a3fc-751e4e4959d5",
+        "model": "deepseek-v4-flash-vision"
+      },
+      "human_author": "tan changzhi <544463199@qq.com>"
+    },
+    "s_673f909c63a730": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "142ce337-0a43-4172-8aaa-657b81f615c2",
+        "model": "unknown"
+      },
+      "human_author": "tan changzhi <544463199@qq.com>"
+    }
+  }
+}
