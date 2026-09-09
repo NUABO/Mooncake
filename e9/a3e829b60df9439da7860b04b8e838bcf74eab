@@ -1,0 +1,19 @@
+mooncake-store/src/spdk/spdk_wrapper.cpp
+  s_673f909c63a730::t_65e8ae17141973 1-2,10-11,125-139,145-154
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "e9a3e829b60df9439da7860b04b8e838bcf74eab",
+  "prompts": {},
+  "sessions": {
+    "s_673f909c63a730": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "142ce337-0a43-4172-8aaa-657b81f615c2",
+        "model": "unknown"
+      },
+      "human_author": "tan changzhi <544463199@qq.com>"
+    }
+  }
+}
